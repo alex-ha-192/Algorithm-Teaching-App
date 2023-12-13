@@ -9,10 +9,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(DelicateCoroutinesApi::class)
 fun mergeSort(array: MutableList<Int>, explanationText: MutableState<String>, colors: MutableList<Color>, colourMode: ColourMode, paused: MutableState<Boolean>)  {
-    GlobalScope.launch{
+    GlobalScope.launch {
         if (array.size > 1) {
             val mid: Int = array.size.div(2)
-            explanationText.value = "${0}, ${mid.toString()}, ${array.size}"
             while (paused.value){
 
             }
@@ -64,13 +63,13 @@ fun mergeSort(array: MutableList<Int>, explanationText: MutableState<String>, co
 
                 }
             }
-            while (j < rightHalf.size){
+            while (j < rightHalf.size) {
                 array[k] = rightHalf[j]
                 explanationText.value = "We add ${rightHalf[j]} to the list."
                 j++
                 k++
                 paused.value = true
-                while (paused.value){
+                while (paused.value) {
 
                 }
             }

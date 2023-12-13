@@ -43,6 +43,7 @@ import com.puterscience.algorithmteachingapp.functions.algorithms.mergeSort
 import com.puterscience.algorithmteachingapp.functions.removeHandler
 import com.puterscience.algorithmteachingapp.functions.resetHandler
 import com.puterscience.algorithmteachingapp.functions.saveToDb
+import kotlinx.coroutines.newSingleThreadContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable

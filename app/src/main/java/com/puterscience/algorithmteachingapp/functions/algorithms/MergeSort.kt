@@ -32,34 +32,34 @@ fun mergeSort(array: MutableList<Int>, explanationText: MutableState<String>, co
             var j=0
             var k=0
             while (i < leftHalf.size && j < rightHalf.size){
-                if (leftHalf[i] < rightHalf[j]){
+                if (leftHalf[i] < rightHalf[j]) {
                     array[k] = leftHalf[i]
                     explanationText.value = "We add ${leftHalf[i]} to the list."
                     i++
                     paused.value = true
                     k++
-                    while (paused.value){
+                    while (paused.value) {
 
                     }
                 }
-                else{
+                else {
                     array[k] = rightHalf[j]
                     explanationText.value = "We add ${rightHalf[j]} to the list."
                     j++
                     paused.value = true
                     k++
-                    while (paused.value){
+                    while (paused.value) {
 
                     }
                 }
             }
-            while (i < leftHalf.size){
+            while (i < leftHalf.size) {
                 array[k] = leftHalf[i]
                 explanationText.value = "We add ${leftHalf[i]} to the list."
                 i++
                 paused.value = true
                 k++
-                while (paused.value){
+                while (paused.value) {
 
                 }
             }

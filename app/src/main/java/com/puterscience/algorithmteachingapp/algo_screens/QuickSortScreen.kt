@@ -178,15 +178,22 @@ fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                     Text(text = explanationText.value, fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp))
                     Divider(modifier = Modifier.padding(16.dp))
                     Text(
-                            text = ("for i = 0 to A.length - 1:\r\n" +
-                                    "   noSwap = true\r\n" +
-                                    "   for j = 0 to A.length - (i+1):\r\n" +
-                                    "       if A[j] > A[j+1]:\r\n" +
-                                    "           swap(A[j],A[j+1]\r\n" +
-                                    "           noSwap = false\r\n" +
-                                    "   if noSwap:\r\n" +
-                                    "       break\r\n" +
-                                    "return A"),
+                            text = (
+                                    "QS:" +
+                                            "\n  if (low < high):" +
+                                            "\n  p = prt(arr,low,high)" +
+                                            "\n  QS(arr,low,p-1)" +
+                                            "\n  QS(arr,p+1,high)" +
+                                            "\nPRT:" +
+                                            "\n  pvt=array[high]" +
+                                            "\n  idx=low-1" +
+                                            "\n  for j in low..high-1:" +
+                                            "\n   if arr[j]<=pvt:" +
+                                            "\n    idx++" +
+                                            "\n    swap arr[j],arr[idx]" +
+                                            "\n  swap arr[idx+1],arr[high]" +
+                                            "\n  return idx+1"
+                                    ),
                             fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
                             modifier = Modifier.alpha(if (textToggle.value) 1f else 0f)
                     )

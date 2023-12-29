@@ -228,7 +228,14 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 						)
 						Divider(modifier = Modifier.padding(16.dp))
 						Text(
-							text = "Pseudocode",
+							text = (
+									"while left <= right:" +
+											"\n    middle = left + right div 2" +
+											"\n    if array[middle] = x, return middle" +
+											"\n    if array[middle] < x, left = middle + 1" +
+											"\n    if array[middle] > x, right = middle - 1" +
+											"\nreturn -1"
+									),
 							fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
 							modifier = Modifier.alpha(if (textToggle.value) 1f else 0f)
 						)

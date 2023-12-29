@@ -201,7 +201,11 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                     .verticalScroll(rememberScrollState())) {
                     Text(text = explanationText.value, fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp))
                     Divider(modifier = Modifier.padding(16.dp))
-                    Text(text = "Code", fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),modifier = Modifier.alpha(if (textToggle.value) 1f else 0f))
+                    Text(text = (
+                            "for i in len(array):" +
+                                    "\n    if toFind = array[i] return i" +
+                                    "\nreturn -1"
+                            ), fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),modifier = Modifier.alpha(if (textToggle.value) 1f else 0f))
                 }
             }
             Row {

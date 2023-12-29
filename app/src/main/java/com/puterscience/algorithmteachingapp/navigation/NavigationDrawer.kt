@@ -108,7 +108,7 @@ fun NavigationDrawer(navController: NavController,
                 }
                 navController.navigate("QuickSortScreen")
             })
-            NavigationDrawerItem(label = { Text(text = "Merge Sort") }, selected = false, onClick = {
+            NavigationDrawerItem(label = { Text(text = "Merge Sort (Demo)") }, selected = false, onClick = {
                 coroutineScope.launch{
                     drawerState.close()
                 }
@@ -195,7 +195,8 @@ fun NavigationDrawer(navController: NavController,
                     DatabaseScreen(globalSettings = globalSettings, defaults = globalDefaults, persistentDb)
                 }
                 composable(route = "MergeSortScreen"){
-                    MergeSortScreen(toSort = stdPass, settings = globalSettings, defaults = globalDefaults, colourMode = globalSettings.colourMode.value, db = persistentDb)
+                    MergeSortScreen(//toSort = stdPass,
+                        settings = globalSettings, defaults = globalDefaults, colourMode = globalSettings.colourMode.value, db = persistentDb)
                 }
             }
         }

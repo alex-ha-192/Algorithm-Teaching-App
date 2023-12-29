@@ -48,7 +48,9 @@ import kotlinx.coroutines.newSingleThreadContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
-fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
+fun MergeSortScreen(//toSort: List<Int>,
+                    settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
+    val toSort = listOf(8, 7, 6, 5, 4, 3, 2, 1)
     val mutItems = remember { mutableStateListOf<Int>().apply { addAll(toSort) } }
     var initialState: List<Int> = toSort
     val lock = remember { mutableStateOf(false) }
@@ -66,12 +68,17 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
         mutableStateListOf<Color>()
     }
     val lockedColors = mutableListOf<Color>()
+    val currentStage = remember{mutableIntStateOf(0)}
 
     for (i in 0 until mutItems.size) {
         defaultColors.add(colourMode.defaultColour)
         actualColors.add(colourMode.defaultColour)
         lockedColors.add(colourMode.lockedColour)
     }
+
+    //actualColors.removeAll(actualColors)
+    //actualColors.addAll(mutableListOf(colourMode.lockedColour, colourMode.lockedColour, colourMode.defaultColour, colourMode.defaultColour, colourMode.selectedColour1, colourMode.selectedColour1, colourMode.selectedColour2, colourMode.selectedColour2))
+
     val daoElements = db.datasetDao().getAll()
     if (showLoadDialog.value) {
         Dialog(onDismissRequest = { showLoadDialog.value = false }) {
@@ -125,12 +132,12 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                     ) {
                     mutItems.forEachIndexed { index, i ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = {if (!lock.value) mutItems[index]--}, modifier = Modifier
+                            /*IconButton(onClick = {if (!lock.value) mutItems[index]--}, modifier = Modifier
                                 .width(24.dp)
                                 .weight(1f)
                                 .alpha(if (!lock.value) 1f else 0f)) {
                                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Reduce")
-                            }
+                            }*/
                             Box(modifier = Modifier
                                 .weight(4f)
                                 .background(actualColors[index])) {
@@ -162,12 +169,12 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                                     }
                                 }
                             }
-                            IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier
+                            /*IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier
                                 .width(24.dp)
                                 .weight(1f)
                                 .alpha(if (!lock.value) 1f else 0f)) {
                                 Icon(imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "Increase")
-                            }
+                            }*/
                         }
                     }
                 }
@@ -207,7 +214,7 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                     )
                 }
             }
-            Row {
+            /*Row {
                 Button(onClick = { if (!lock.value) showLoadDialog.value = true }) {
                     Text(text = "Load")
                 }
@@ -220,13 +227,14 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                     onValueChange = { toUseName.value = it },
                     label = { Text(text = "Dataset name")}
                 )
-            }
+            }*/
             LargeFloatingActionButton(onClick =
             { if (!lock.value){lock.value = true
-                mergeSort(mutItems, explanationText, actualColors, colourMode, paused)
+                mergeSort(mutItems, explanationText, actualColors, colourMode, paused, currentStage)
             }
                                                 else {
-                                                    paused.value = false
+                                                    currentStage.intValue++
+                mergeSort(mutItems, explanationText, actualColors, colourMode, paused, currentStage)
                                                 }
             }
                 , modifier = Modifier
@@ -237,15 +245,17 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
             Divider(modifier = Modifier.padding(all = 8.dp))
             Row (modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
                 IconButton(onClick = {resetHandler(defaultColors, actualColors, mutItems, initialState, null, explanationText, null, lock)
+                    currentStage.intValue = 0
                 }) {
                     androidx.compose.material3.Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
                 }
-                IconButton(onClick = { if (!lock.value) addHandler(mutItems, settings.maxSize.intValue)}, modifier = Modifier.background(color = if (mutItems.size > settings.maxSize.intValue) colourMode.lockedColour else colourMode.defaultColour)) {
+                /*IconButton(onClick = { if (!lock.value) addHandler(mutItems, settings.maxSize.intValue)}, modifier = Modifier.background(color = if (mutItems.size > settings.maxSize.intValue) colourMode.lockedColour else colourMode.defaultColour)) {
                     androidx.compose.material3.Icon(imageVector = Icons.Filled.Add, contentDescription = "Add element")
                 }
                 IconButton(onClick = { if (!lock.value) removeHandler(mutItems) }, modifier = Modifier.background(color = if (mutItems.size <= 1) colourMode.lockedColour else colourMode.defaultColour)) {
                     androidx.compose.material3.Icon(imageVector = Icons.Filled.Clear, contentDescription = "Remove element")
                 }
+                 */
                 Button(onClick = { textToggle.value = !textToggle.value }) {
                     Text(text = (if (textToggle.value) "Text Off" else "Text On"), fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
                 }

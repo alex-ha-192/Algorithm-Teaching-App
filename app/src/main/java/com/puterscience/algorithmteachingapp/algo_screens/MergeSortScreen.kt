@@ -43,6 +43,7 @@ import com.puterscience.algorithmteachingapp.functions.algorithms.mergeSort
 import com.puterscience.algorithmteachingapp.functions.removeHandler
 import com.puterscience.algorithmteachingapp.functions.resetHandler
 import com.puterscience.algorithmteachingapp.functions.saveToDb
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -58,6 +59,7 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
     val leftPartition = remember{ mutableIntStateOf(0)}
     val rightPartition = remember{ mutableIntStateOf(mutItems.size-1)}
     val paused = remember{ mutableStateOf(true)}
+    val scope = rememberCoroutineScope()
     // Colors
     val defaultColors = mutableListOf<Color>()
     val actualColors = remember {

@@ -181,7 +181,27 @@ fun MergeSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                     Text(text = explanationText.value, fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp))
                     Divider(modifier = Modifier.padding(16.dp))
                     Text(
-                            text = (""),
+                            text = (
+                                    "if len > 1:" +
+                                            "\n half=len(arr)/2" +
+                                            "\n firstHalf=arr[:half]" +
+                                            "\n secondHalf=arr[half:]" +
+                                            "\n MS(firstHalf)" +
+                                            "\n MS(secondHalf)" +
+                                            "\n i,j,k=0" +
+                                            "\n while i<len(fH)&j<len(sH):" +
+                                            "\n  if fH[i]<sH[j]" +
+                                            "\n   arr[k]=fH[i]" +
+                                            "\n   i++" +
+                                            "\n  else" +
+                                            "\n   arr[k]=sH[j]" +
+                                            "\n   j++" +
+                                            "\n  k++" +
+                                            "\n if fH remains:" +
+                                            "\n  arr.append(fH)" +
+                                            "\n if sH remains:" +
+                                            "\n  arr.append(sH)"
+                                    ),
                             fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
                             modifier = Modifier.alpha(if (textToggle.value) 1f else 0f)
                     )

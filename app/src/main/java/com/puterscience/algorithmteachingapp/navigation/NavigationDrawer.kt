@@ -19,12 +19,14 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
@@ -35,8 +37,9 @@ import com.puterscience.algorithmteachingapp.algo_screens.BubbleSortScreen
 import com.puterscience.algorithmteachingapp.algo_screens.LinearSearchScreen
 import com.puterscience.algorithmteachingapp.algo_screens.MergeSortScreen
 import com.puterscience.algorithmteachingapp.algo_screens.QuickSortScreen
-import com.puterscience.algorithmteachingapp.database.db_classes.Database
 import com.puterscience.algorithmteachingapp.database.DatabaseScreen
+import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDatabase
+import com.puterscience.algorithmteachingapp.database.settings_db.settingsDao
 import com.puterscience.algorithmteachingapp.main.MainScreen
 import com.puterscience.algorithmteachingapp.settings.SettingsScreen
 import kotlinx.coroutines.launch
@@ -49,7 +52,9 @@ fun NavigationDrawer(navController: NavController,
                      globalSettings: Settings,
                      globalDefaults: Defaults,
                      colourModes: List<ColourMode>,
-                     persistentDb: Database
+                     persistentDb: DatasetDatabase,
+                     firstTimeFlag: MutableState<Boolean>,
+                     settingsDao: settingsDao
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -72,6 +77,13 @@ fun NavigationDrawer(navController: NavController,
                 navController.navigate("InstructionsScreen")
             })
             */
+            NavigationDrawerItem(label = { Text(text = "Main")}, selected = false, onClick = {
+                coroutineScope.launch{
+                    drawerState.close()
+                }
+                navController.navigate("MainScreen")
+            })
+            Divider()
             NavigationDrawerItem(label = { Text("Bubble Sort") }, selected = false, onClick = {
                 coroutineScope.launch{
                     drawerState.close()
@@ -139,7 +151,7 @@ fun NavigationDrawer(navController: NavController,
                     },
                 )
             }
-            NavHost(navController = navHostController, startDestination = "MainScreen", modifier = Modifier.padding(8.dp)) {
+            NavHost(navController = navHostController, startDestination = if (firstTimeFlag.value) "SettingsScreen" else "MainScreen", modifier = Modifier.padding(8.dp)) {
                 composable(route = "BubbleSortScreen") {
                     BubbleSortScreen(
                         toSort = stdPass,
@@ -172,7 +184,9 @@ fun NavigationDrawer(navController: NavController,
                 composable(route = "SettingsScreen") {
                     SettingsScreen(globalSettings = globalSettings,
                         globalDefaults,
-                        colourModes)
+                        colourModes,
+                        firstTimeFlag,
+                        settingsDao = settingsDao)
                 }
                 composable(route = "QuickSortScreen"){
                     QuickSortScreen(toSort = stdPass, settings = globalSettings, defaults = globalDefaults, colourMode = globalSettings.colourMode.value, db = persistentDb)

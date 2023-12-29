@@ -40,7 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.puterscience.algorithmteachingapp.database.db_classes.Database
+import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDatabase
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
@@ -52,7 +52,7 @@ import com.puterscience.algorithmteachingapp.functions.saveToDb
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, colourMode: ColourMode, db: Database) {
+fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
     val mutItems = remember { mutableStateListOf<Int>().apply { addAll(toSort) } }
     var initialState: List<Int> = toSort
     val increment = remember { mutableStateOf(true) }

@@ -16,13 +16,13 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import com.puterscience.algorithmteachingapp.database.db_classes.Database
 import com.puterscience.algorithmteachingapp.database.db_classes.Dataset
+import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDatabase
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 
 @Composable
-fun DatabaseScreen(globalSettings: Settings, defaults: Defaults, database: Database) {
+fun DatabaseScreen(globalSettings: Settings, defaults: Defaults, database: DatasetDatabase) {
     val dao = database.datasetDao()
     val daoSorted = dao.getAll()
     val allElements: MutableList<Dataset> = remember { mutableStateListOf<Dataset>().apply { addAll(daoSorted) }}

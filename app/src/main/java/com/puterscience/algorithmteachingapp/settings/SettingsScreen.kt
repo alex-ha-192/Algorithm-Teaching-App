@@ -10,12 +10,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.sp
+import com.puterscience.algorithmteachingapp.database.settings_db.SettingsDataObject
+import com.puterscience.algorithmteachingapp.database.settings_db.settingsDao
+import com.puterscience.algorithmteachingapp.functions.constructSettingsString
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 
 @Composable
-fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes: List<ColourMode>) {
+fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes: List<ColourMode>, firstTimeFlag: MutableState<Boolean>, settingsDao: settingsDao) {
     val currentColourBlindMode: MutableState<String> = remember {mutableStateOf("")}
     if (globalSettings.colourMode.value == allColourModes[0]){
         currentColourBlindMode.value = "Standard"
@@ -71,6 +74,21 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
                 }
                 Text(text = "Current colour mode: " +currentColourBlindMode.value, fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
+            }
+            Divider()
+            Column {
+                Button(onClick = {
+                    firstTimeFlag.value = false
+                    if (settingsDao.getSettings().size != 0) {
+                        settingsDao.updateSettings(SettingsDataObject(1, constructSettingsString(globalSettings, allColourModes)))
+                    }
+                    else {
+                        settingsDao.addSettings(SettingsDataObject(1, constructSettingsString(globalSettings, allColourModes)))
+                    }
+                }) {
+                    Text(text = "Save settings", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
+                }
+                Text(text = if (firstTimeFlag.value) "No settings saved!" else "", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp )
             }
         }
     }

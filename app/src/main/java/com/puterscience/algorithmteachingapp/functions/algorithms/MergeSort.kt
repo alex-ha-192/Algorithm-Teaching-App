@@ -1,84 +1,59 @@
 package com.puterscience.algorithmteachingapp.functions.algorithms
 
+import android.util.MutableInt
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.Color
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
+// TODO: the below code doesn't work
 @OptIn(DelicateCoroutinesApi::class)
 fun mergeSort(array: MutableList<Int>, explanationText: MutableState<String>, colors: MutableList<Color>, colourMode: ColourMode, paused: MutableState<Boolean>)  {
-    GlobalScope.launch {
-        if (array.size > 1) {
-            val mid: Int = array.size.div(2)
-            while (paused.value){
+    val low = mutableIntStateOf(0)
+    val high = mutableIntStateOf(array.size - 1)
+    val temp = array
+    var oldM = 1
+    for (m in 1..(high.intValue-low.intValue)) {
+        if (m != 2*oldM) {
 
-            }
-            val leftHalf = array.slice(0 until mid).toMutableList()
-            val rightHalf = array.slice(mid until array.size).toMutableList()
-            explanationText.value = "We now split the list between indices ${0}, ${mid}."
-            while (paused.value){
+        }
+        else {
+            oldM = m
 
-            }
-            mergeSort(leftHalf, explanationText, colors, colourMode, paused)
-            explanationText.value = "We now split the list between indices ${mid}, ${array.size}."
-            while (paused.value){
+            for (i in low.intValue..high.intValue - 1 step 2 * m) {
+                val from = mutableIntStateOf(i)
+                val mid = mutableIntStateOf(i + m - 1)
+                val to = mutableIntStateOf(min(1 + 2 * m - 1, high.intValue))
 
+                val result = merge(array, temp, from, mid, to)
+                for (i in 0..array.size-1) {
+                    array[i] = result[i]
+                }
             }
-            mergeSort(rightHalf, explanationText, colors, colourMode, paused)
-            while(paused.value){
-
-            }
-            mergeLists(array, explanationText, paused, leftHalf, rightHalf)
         }
     }
 }
 
-fun mergeLists(array: MutableList<Int>, explanationText: MutableState<String>, paused: MutableState<Boolean>, leftHalf: MutableList<Int>, rightHalf: MutableList<Int>){
-    var i=0
-    var j=0
-    var k=0
-    while (i < leftHalf.size && j < rightHalf.size){
-        if (leftHalf[i] < rightHalf[j]) {
-            array[k] = leftHalf[i]
-            explanationText.value = "We add ${leftHalf[i]} to the list."
-            i++
-            paused.value = true
-            k++
-            while (paused.value) {
+fun merge(array: MutableList<Int>, temp: MutableList<Int>, from: MutableIntState, mid: MutableIntState, to: MutableIntState): MutableList<Int> {
+    var k = from.intValue
+    var i = from.intValue
+    var j = mid.intValue + 1
 
-            }
+    while (i <= mid.intValue && j <= to.intValue) {
+        if (array[i] < array[j]) {
+            temp.add(k, array[i])
+            i++
         }
         else {
-            array[k] = rightHalf[j]
-            explanationText.value = "We add ${rightHalf[j]} to the list."
+            temp.add(k, array[j])
             j++
-            paused.value = true
-            k++
-            while (paused.value) {
-
-            }
         }
-    }
-    while (i < leftHalf.size) {
-        array[k] = leftHalf[i]
-        explanationText.value = "We add ${leftHalf[i]} to the list."
-        i++
-        paused.value = true
         k++
-        while (paused.value) {
-
-        }
     }
-    while (j < rightHalf.size) {
-        array[k] = rightHalf[j]
-        explanationText.value = "We add ${rightHalf[j]} to the list."
-        j++
-        k++
-        paused.value = true
-        while (paused.value) {
-
-        }
-    }
+    return temp
 }

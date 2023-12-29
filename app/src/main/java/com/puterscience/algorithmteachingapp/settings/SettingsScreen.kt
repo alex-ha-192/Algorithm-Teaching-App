@@ -2,8 +2,13 @@ package com.puterscience.algorithmteachingapp.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -46,14 +51,14 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
             Text(text = "Select colour mode:", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
             Column {
                 // Default colour mode
-                Button(onClick = { globalSettings.colourMode.value = allColourModes[0]}) {
+                Button(onClick = { globalSettings.colourMode.value = allColourModes[0] }) {
                     Text(
                         text = "Standard vision",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                     )
                 }
                 // Protanopia
-                Button(onClick = { globalSettings.colourMode.value = allColourModes[1]}) {
+                Button(onClick = { globalSettings.colourMode.value = allColourModes[1] }) {
                     Text(
                         text = "Protanopia/Deuteranopia",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
@@ -70,25 +75,64 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
 
                 // Monochromacy
                 Button(onClick = { globalSettings.colourMode.value = allColourModes[3] }) {
-                    Text(text = "Monochromacy",
-                        fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
+                    Text(
+                        text = "Monochromacy",
+                        fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
+                    )
                 }
-                Text(text = "Current colour mode: " +currentColourBlindMode.value, fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
-            }
-            Divider()
-            Column {
-                Button(onClick = {
-                    firstTimeFlag.value = false
-                    if (settingsDao.getSettings().size != 0) {
-                        settingsDao.updateSettings(SettingsDataObject(1, constructSettingsString(globalSettings, allColourModes)))
+                Text(
+                    text = "Current colour mode: " + currentColourBlindMode.value,
+                    fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
+                )
+                Divider()
+                Row {
+                    Button(onClick = { if (globalSettings.maxSize.intValue > 1) globalSettings.maxSize.intValue-- }) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowDown,
+                            contentDescription = "Reduce"
+                        )
                     }
-                    else {
-                        settingsDao.addSettings(SettingsDataObject(1, constructSettingsString(globalSettings, allColourModes)))
+                    Text(
+                        text = globalSettings.maxSize.intValue.toString(),
+                        fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
+                    )
+                    Button(onClick = { globalSettings.maxSize.intValue++ }) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowUp,
+                            contentDescription = "Increase"
+                        )
                     }
-                }) {
-                    Text(text = "Save settings", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
                 }
-                Text(text = if (firstTimeFlag.value) "No settings saved!" else "", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp )
+                Divider()
+                Column {
+                    Button(onClick = {
+                        firstTimeFlag.value = false
+                        if (settingsDao.getSettings().size != 0) {
+                            settingsDao.updateSettings(
+                                SettingsDataObject(
+                                    1,
+                                    constructSettingsString(globalSettings, allColourModes)
+                                )
+                            )
+                        } else {
+                            settingsDao.addSettings(
+                                SettingsDataObject(
+                                    1,
+                                    constructSettingsString(globalSettings, allColourModes)
+                                )
+                            )
+                        }
+                    }) {
+                        Text(
+                            text = "Save settings",
+                            fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
+                        )
+                    }
+                    Text(
+                        text = if (firstTimeFlag.value) "No settings saved!" else "",
+                        fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
+                    )
+                }
             }
         }
     }

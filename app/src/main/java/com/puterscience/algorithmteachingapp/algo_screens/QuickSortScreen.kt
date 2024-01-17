@@ -79,7 +79,7 @@ fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                 daoElements.forEachIndexed { _, i ->
                     Row {
                         Text(text = i.name + ": ")
-                        Text(text = i.listInts)
+                        Text(text = i.listInts.split("_").toList().toString())
                         IconButton(onClick = {
                             mutItems.removeAll(mutItems)
                             val intermediary: List<String> = i.listInts.split("_")

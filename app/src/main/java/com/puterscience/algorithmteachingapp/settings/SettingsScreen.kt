@@ -85,22 +85,24 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                     fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                 )
                 Divider()
-                Row {
-                    Button(onClick = { if (globalSettings.maxSize.intValue > 1) globalSettings.maxSize.intValue-- }) {
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            contentDescription = "Reduce"
-                        )
-                    }
+                Column {
                     Text(
-                        text = globalSettings.maxSize.intValue.toString(),
+                        text = ("Maximum size: " + globalSettings.maxSize.intValue.toString()),
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                     )
-                    Button(onClick = { globalSettings.maxSize.intValue++ }) {
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowUp,
-                            contentDescription = "Increase"
-                        )
+                    Row {
+                        Button(onClick = { if (globalSettings.maxSize.intValue > 1) globalSettings.maxSize.intValue-- }) {
+                            Icon(
+                                imageVector = Icons.Filled.KeyboardArrowDown,
+                                contentDescription = "Reduce"
+                            )
+                        }
+                        Button(onClick = { globalSettings.maxSize.intValue++ }) {
+                            Icon(
+                                imageVector = Icons.Filled.KeyboardArrowUp,
+                                contentDescription = "Increase"
+                            )
+                        }
                     }
                 }
                 Divider()

@@ -189,25 +189,25 @@ fun MergeSortScreen(//toSort: List<Int>,
                     Divider(modifier = Modifier.padding(16.dp))
                     Text(
                             text = (
-                                    "if len > 1:" +
-                                            "\n half=len(arr)/2" +
-                                            "\n firstHalf=arr[:half]" +
-                                            "\n secondHalf=arr[half:]" +
-                                            "\n MS(firstHalf)" +
-                                            "\n MS(secondHalf)" +
-                                            "\n i,j,k=0" +
-                                            "\n while i<len(fH)&j<len(sH):" +
-                                            "\n  if fH[i]<sH[j]" +
-                                            "\n   arr[k]=fH[i]" +
-                                            "\n   i++" +
-                                            "\n  else" +
-                                            "\n   arr[k]=sH[j]" +
-                                            "\n   j++" +
-                                            "\n  k++" +
-                                            "\n if fH remains:" +
-                                            "\n  arr.append(fH)" +
-                                            "\n if sH remains:" +
-                                            "\n  arr.append(sH)"
+                                    "1. if len > 1:" +
+                                            "\n2.  half=len(arr)/2" +
+                                            "\n3.  firstHalf=arr[:half]" +
+                                            "\n4.  secondHalf=arr[half:]" +
+                                            "\n5.  MS(firstHalf)" +
+                                            "\n6.  MS(secondHalf)" +
+                                            "\n7.  i,j,k=0" +
+                                            "\n8. while i<len(fH)&j<len(sH):" +
+                                            "\n9.   if fH[i]<sH[j]" +
+                                            "\n10.    arr[k]=fH[i]" +
+                                            "\n11.    i++" +
+                                            "\n12.   else" +
+                                            "\n13.    arr[k]=sH[j]" +
+                                            "\n14.    j++" +
+                                            "\n15.   k++" +
+                                            "\n16.  if fH remains:" +
+                                            "\n17.   arr.append(fH)" +
+                                            "\n18.  if sH remains:" +
+                                            "\n19.   arr.append(sH)"
                                     ),
                             fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
                             modifier = Modifier.alpha(if (textToggle.value) 1f else 0f)
@@ -240,7 +240,7 @@ fun MergeSortScreen(//toSort: List<Int>,
                 , modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.1f)) {
-                Text(text = "Sort (will lock values)", fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
+                Text(text = "Mergesort (will lock values)", fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
             }
             Divider(modifier = Modifier.padding(all = 8.dp))
             Row (modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {

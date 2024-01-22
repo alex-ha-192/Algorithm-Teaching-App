@@ -124,34 +124,6 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                 ) {
-                    mutItems.forEachIndexed { index, i ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = {if (!lock.value) mutItems[index]--}, modifier = Modifier
-                                .width(24.dp)
-                                .alpha(if (!lock.value) 1f else 0f)) {
-                                Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Reduce")
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .background(mutColors[index])
-                            )
-                            {
-                                Text(
-                                    text = i.toString(),
-                                    modifier = Modifier.align(Center),
-                                    fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
-                                    color = Color.White
-                                )
-                            }
-                            IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier
-                                .width(24.dp)
-                                .alpha(if (!lock.value) 1f else 0f)) {
-                                Icon(imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "Increase")
-                            }
-                        }
-                    }
-                    Divider()
                     Row (verticalAlignment = Alignment.CenterVertically){
                         IconButton(
                             onClick = { if (!lock.value) toSearch.value-- },
@@ -191,6 +163,34 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                             )
                         }
                     }
+                    Divider()
+                    mutItems.forEachIndexed { index, i ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = {if (!lock.value) mutItems[index]--}, modifier = Modifier
+                                .width(24.dp)
+                                .alpha(if (!lock.value) 1f else 0f)) {
+                                Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Reduce")
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .background(mutColors[index])
+                            )
+                            {
+                                Text(
+                                    text = i.toString(),
+                                    modifier = Modifier.align(Center),
+                                    fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
+                                    color = Color.White
+                                )
+                            }
+                            IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier
+                                .width(24.dp)
+                                .alpha(if (!lock.value) 1f else 0f)) {
+                                Icon(imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "Increase")
+                            }
+                        }
+                    }
                 }
                 Divider(modifier = Modifier
                     .alpha(0f)
@@ -202,9 +202,9 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                     Text(text = explanationText.value, fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp))
                     Divider(modifier = Modifier.padding(16.dp))
                     Text(text = (
-                            "for i in len(array):" +
-                                    "\n    if toFind = array[i] return i" +
-                                    "\nreturn -1"
+                            "1. for i in len(array):" +
+                                    "\n2.    if toFind = array[i] return i" +
+                                    "\n3. return -1"
                             ), fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),modifier = Modifier.alpha(if (textToggle.value) 1f else 0f))
                 }
             }
@@ -229,7 +229,7 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                 }, modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.1f)) {
-                Text(text = "Search (will lock values)", fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
+                Text(text = "Linear search (will lock values)", fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
             }
             Divider(modifier = Modifier.padding(all = 8.dp))
             Row (modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {

@@ -179,20 +179,20 @@ fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                     Divider(modifier = Modifier.padding(16.dp))
                     Text(
                             text = (
-                                    "QS:" +
-                                            "\n  if (low < high):" +
-                                            "\n  p = prt(arr,low,high)" +
-                                            "\n  QS(arr,low,p-1)" +
-                                            "\n  QS(arr,p+1,high)" +
-                                            "\nPRT:" +
-                                            "\n  pvt=array[high]" +
-                                            "\n  idx=low-1" +
-                                            "\n  for j in low..high-1:" +
-                                            "\n   if arr[j]<=pvt:" +
-                                            "\n    idx++" +
-                                            "\n    swap arr[j],arr[idx]" +
-                                            "\n  swap arr[idx+1],arr[high]" +
-                                            "\n  return idx+1"
+                                    "1. QS:" +
+                                            "\n2.   if (low < high):" +
+                                            "\n3.   p = prt(arr,low,high)" +
+                                            "\n4.   QS(arr,low,p-1)" +
+                                            "\n5.   QS(arr,p+1,high)" +
+                                            "\n6. PRT:" +
+                                            "\n7.   pvt=array[high]" +
+                                            "\n8.   idx=low-1" +
+                                            "\n9.   for j in low..high-1:" +
+                                            "\n10.    if arr[j]<=pvt:" +
+                                            "\n11.     idx++" +
+                                            "\n12.     swap arr[j],arr[idx]" +
+                                            "\n13.   swap arr[idx+1],arr[high]" +
+                                            "\n14.   return idx+1"
                                     ),
                             fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
                             modifier = Modifier.alpha(if (textToggle.value) 1f else 0f)
@@ -225,7 +225,7 @@ fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                 , modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.1f)) {
-                Text(text = "Sort (will lock values)", fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
+                Text(text = "Quicksort (will lock values)", fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
             }
             Divider(modifier = Modifier.padding(all = 8.dp))
             Row (modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {

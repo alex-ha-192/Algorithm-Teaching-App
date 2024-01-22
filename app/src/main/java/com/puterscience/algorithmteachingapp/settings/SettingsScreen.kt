@@ -24,6 +24,7 @@ import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 
 @Composable
 fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes: List<ColourMode>, firstTimeFlag: MutableState<Boolean>, settingsDao: settingsDao) {
+    val justSaved: MutableState<Boolean> = remember { mutableStateOf(false)}
     val currentColourBlindMode: MutableState<String> = remember {mutableStateOf("")}
     if (globalSettings.colourMode.value == allColourModes[0]){
         currentColourBlindMode.value = "Standard"
@@ -41,7 +42,8 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
     Box {
         Column {
             Text(text = "Text size:", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
-            Button(onClick = {(globalSettings.largeText.value) = !(globalSettings.largeText.value)}) {
+            Button(onClick = { justSaved.value = false
+                (globalSettings.largeText.value) = !(globalSettings.largeText.value)}) {
                 Text(
                     text = (if (globalSettings.largeText.value) "Disable large text" else "Enable large text"),
                     fontSize = (if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
@@ -51,14 +53,16 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
             Text(text = "Select colour mode:", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
             Column {
                 // Default colour mode
-                Button(onClick = { globalSettings.colourMode.value = allColourModes[0] }) {
+                Button(onClick = { justSaved.value = false
+                    globalSettings.colourMode.value = allColourModes[0] }) {
                     Text(
                         text = "Standard vision",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                     )
                 }
                 // Protanopia
-                Button(onClick = { globalSettings.colourMode.value = allColourModes[1] }) {
+                Button(onClick = { justSaved.value = false
+                    globalSettings.colourMode.value = allColourModes[1] }) {
                     Text(
                         text = "Protanopia/Deuteranopia",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
@@ -66,7 +70,8 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                 }
 
                 // Tritanopia
-                Button(onClick = { globalSettings.colourMode.value = allColourModes[2] }) {
+                Button(onClick = { justSaved.value = false
+                    globalSettings.colourMode.value = allColourModes[2] }) {
                     Text(
                         text = "Tritanopia",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
@@ -74,7 +79,8 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                 }
 
                 // Monochromacy
-                Button(onClick = { globalSettings.colourMode.value = allColourModes[3] }) {
+                Button(onClick = { justSaved.value = false
+                    globalSettings.colourMode.value = allColourModes[3] }) {
                     Text(
                         text = "Monochromacy",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
@@ -87,17 +93,20 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                 Divider()
                 Column {
                     Text(
-                        text = ("Maximum size: " + globalSettings.maxSize.intValue.toString()),
+                        text = ("Maximum size of dataset: " + globalSettings.maxSize.intValue.toString()),
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                     )
                     Row {
-                        Button(onClick = { if (globalSettings.maxSize.intValue > 1) globalSettings.maxSize.intValue-- }) {
+                        Button(onClick = { justSaved.value = false
+                            if (globalSettings.maxSize.intValue > 1) globalSettings.maxSize.intValue-- }) {
                             Icon(
                                 imageVector = Icons.Filled.KeyboardArrowDown,
                                 contentDescription = "Reduce"
                             )
                         }
-                        Button(onClick = { globalSettings.maxSize.intValue++ }) {
+                        Button(onClick =
+                        { justSaved.value = false
+                            globalSettings.maxSize.intValue++ }) {
                             Icon(
                                 imageVector = Icons.Filled.KeyboardArrowUp,
                                 contentDescription = "Increase"
@@ -109,6 +118,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                 Column {
                     Button(onClick = {
                         firstTimeFlag.value = false
+                        justSaved.value = true
                         if (settingsDao.getSettings().size != 0) {
                             settingsDao.updateSettings(
                                 SettingsDataObject(
@@ -131,7 +141,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                         )
                     }
                     Text(
-                        text = if (firstTimeFlag.value) "No settings saved!" else "",
+                        text = if (firstTimeFlag.value) "No settings saved!" else if (!justSaved.value)"" else "Saved successfully!",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                     )
                 }

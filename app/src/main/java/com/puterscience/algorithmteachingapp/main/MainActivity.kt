@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDatabase
+import com.puterscience.algorithmteachingapp.database.dataset_db.DatasetDatabase
 import com.puterscience.algorithmteachingapp.database.settings_db.SettingsDatabase
 import com.puterscience.algorithmteachingapp.functions.loadSettings
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode

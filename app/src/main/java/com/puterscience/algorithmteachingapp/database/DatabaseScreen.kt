@@ -16,8 +16,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import com.puterscience.algorithmteachingapp.database.db_classes.Dataset
-import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDatabase
+import com.puterscience.algorithmteachingapp.database.dataset_db.Dataset
+import com.puterscience.algorithmteachingapp.database.dataset_db.DatasetDatabase
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 

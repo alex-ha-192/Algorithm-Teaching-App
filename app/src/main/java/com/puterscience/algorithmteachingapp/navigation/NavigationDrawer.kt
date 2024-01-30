@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
@@ -38,7 +37,7 @@ import com.puterscience.algorithmteachingapp.algo_screens.LinearSearchScreen
 import com.puterscience.algorithmteachingapp.algo_screens.MergeSortScreen
 import com.puterscience.algorithmteachingapp.algo_screens.QuickSortScreen
 import com.puterscience.algorithmteachingapp.database.DatabaseScreen
-import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDatabase
+import com.puterscience.algorithmteachingapp.database.dataset_db.DatasetDatabase
 import com.puterscience.algorithmteachingapp.database.settings_db.settingsDao
 import com.puterscience.algorithmteachingapp.main.MainScreen
 import com.puterscience.algorithmteachingapp.settings.SettingsScreen

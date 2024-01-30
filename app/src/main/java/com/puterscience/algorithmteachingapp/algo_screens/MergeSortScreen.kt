@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
@@ -24,7 +20,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,17 +29,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDatabase
+import com.puterscience.algorithmteachingapp.database.dataset_db.DatasetDatabase
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
-import com.puterscience.algorithmteachingapp.functions.addHandler
 import com.puterscience.algorithmteachingapp.functions.algorithms.mergeSort
-import com.puterscience.algorithmteachingapp.functions.removeHandler
 import com.puterscience.algorithmteachingapp.functions.resetHandler
-import com.puterscience.algorithmteachingapp.functions.saveToDb
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable

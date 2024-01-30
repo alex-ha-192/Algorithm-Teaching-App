@@ -1,4 +1,4 @@
-package com.puterscience.algorithmteachingapp.database.db_classes
+package com.puterscience.algorithmteachingapp.database.dataset_db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

@@ -1,6 +1,5 @@
 package com.puterscience.algorithmteachingapp.functions
 
-import android.provider.Settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -10,12 +9,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Dialog
-import com.puterscience.algorithmteachingapp.database.db_classes.Dataset
-import com.puterscience.algorithmteachingapp.database.db_classes.DatasetDao
+import com.puterscience.algorithmteachingapp.database.dataset_db.Dataset
+import com.puterscience.algorithmteachingapp.database.dataset_db.DatasetDao
 import com.puterscience.algorithmteachingapp.settings.settings_classes.BasicSettings
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
 

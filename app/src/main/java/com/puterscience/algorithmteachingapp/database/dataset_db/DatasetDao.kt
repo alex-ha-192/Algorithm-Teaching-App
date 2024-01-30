@@ -1,4 +1,4 @@
-package com.puterscience.algorithmteachingapp.database.db_classes
+package com.puterscience.algorithmteachingapp.database.dataset_db
 
 import androidx.room.Dao
 import androidx.room.Delete

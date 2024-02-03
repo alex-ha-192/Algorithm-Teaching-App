@@ -59,6 +59,9 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 	val explanationText = remember { mutableStateOf<String>("") }
 	val currentLeftIndex = remember { mutableIntStateOf(0) }
 	val currentRightIndex = remember { mutableIntStateOf(mutItems.size) }
+	val loadedList = remember {
+		mutableListOf<Int>()
+	}
 
 	// Button variables
 	val toSearch = remember { mutableIntStateOf(0) }
@@ -98,6 +101,8 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 								mutItems.addAll(intermediaryList)
 								initialState = intermediaryList.toList()
 								explanationText.value = "Loaded!"
+								loadedList.removeAll(loadedList)
+								loadedList.addAll(mutItems)
 								showLoadDialog.value = false
 							}) {
 								Icon(
@@ -258,6 +263,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 					onClick = {
 						if (!lock.value) {
 							lock.value = true
+							initialState = mutItems.toList()
 							currentLeftIndex.value = 0
 							currentRightIndex.value = mutItems.size
 						}
@@ -289,7 +295,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 							blankColors,
 							mutColors,
 							mutItems,
-							initialState,
+							if (loadedList.isEmpty()) initialState else loadedList.toList(),
 							searchFinished,
 							explanationText,
 							iState,

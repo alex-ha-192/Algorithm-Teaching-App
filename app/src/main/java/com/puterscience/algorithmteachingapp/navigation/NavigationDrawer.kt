@@ -43,6 +43,7 @@ import com.puterscience.algorithmteachingapp.main.MainScreen
 import com.puterscience.algorithmteachingapp.settings.SettingsScreen
 import kotlinx.coroutines.launch
 
+// some material3 stuff is experimental, so suppress some errors and opt into experimental ui composables
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,11 +56,17 @@ fun NavigationDrawer(navController: NavController,
                      firstTimeFlag: MutableState<Boolean>,
                      settingsDao: settingsDao
 ) {
+
+    // define the drawer's state and create a scope to return to main
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    // this scope allows the drawer to be closed from inside the drawer
     val coroutineScope = rememberCoroutineScope()
+    // this defines the default dataset, (5, 4, 3, 2, 1) makes sense for both sort/search
     val stdPass = listOf(5, 4, 3, 2, 1)
+
+    // everything in the UI is contained in the ModalNavDrawer
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
-        ModalDrawerSheet (modifier = Modifier.fillMaxWidth(0.67f),){
+        ModalDrawerSheet (modifier = Modifier.fillMaxWidth(0.67f),){ // drawer sheet contains drawer items
             /*
             Text(text = "ATA",
                 modifier = Modifier.padding(16.dp),
@@ -77,7 +84,7 @@ fun NavigationDrawer(navController: NavController,
             })
             */
             NavigationDrawerItem(label = { Text(text = "Main")}, selected = false, onClick = {
-                coroutineScope.launch{
+                coroutineScope.launch{ // coroutineScope closes drawer from inside the drawer - escapes the drawer's own scope
                     drawerState.close()
                 }
                 navController.navigate("MainScreen")
@@ -132,9 +139,9 @@ fun NavigationDrawer(navController: NavController,
             })
         }
     }) {
-        Column(){
+        Column {
             Row {
-                CenterAlignedTopAppBar(title = {Text(text = "Algorithm Teaching App")},
+                CenterAlignedTopAppBar(title = {Text(text = "Algorithm Teaching App")}, // this should always be present
                     navigationIcon = {
                         IconButton(onClick = { coroutineScope.launch {
                             drawerState.apply {
@@ -150,6 +157,8 @@ fun NavigationDrawer(navController: NavController,
                     },
                 )
             }
+
+            // navHost stores the SAM to be loaded at that time, loaded inside the navHost
             NavHost(navController = navHostController, startDestination = if (firstTimeFlag.value) "SettingsScreen" else "MainScreen", modifier = Modifier.padding(8.dp)) {
                 composable(route = "BubbleSortScreen") {
                     BubbleSortScreen(

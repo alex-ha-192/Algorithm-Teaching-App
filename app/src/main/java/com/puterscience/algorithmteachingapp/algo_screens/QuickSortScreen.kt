@@ -1,14 +1,19 @@
 package com.puterscience.algorithmteachingapp.algo_screens
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,7 +31,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,25 +44,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.puterscience.algorithmteachingapp.database.dataset_db.DatasetDatabase
-import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
-import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
-import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 import com.puterscience.algorithmteachingapp.functions.addHandler
 import com.puterscience.algorithmteachingapp.functions.algorithms.quickSort
 import com.puterscience.algorithmteachingapp.functions.removeHandler
 import com.puterscience.algorithmteachingapp.functions.resetHandler
 import com.puterscience.algorithmteachingapp.functions.saveToDb
+import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
+import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
+import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
     val mutItems = remember { mutableStateListOf<Int>().apply { addAll(toSort) } }
     var initialState: List<Int> = toSort
     val lock = remember { mutableStateOf(false) }
     val textToggle = remember { mutableStateOf(true)}
-    val explanationText = remember {mutableStateOf<String>("")}
-    val showLoadDialog = remember { mutableStateOf<Boolean>(false) }
-    val toUseName = remember {mutableStateOf<String>("")}
+    val explanationText = remember {mutableStateOf("")}
+    val showLoadDialog = remember { mutableStateOf(false) }
+    val toUseName = remember {mutableStateOf("")}
     val leftPartition = remember{ mutableIntStateOf(0)}
     val rightPartition = remember{ mutableIntStateOf(mutItems.size-1)}
     val paused = remember{ mutableStateOf(true)}
@@ -92,7 +101,7 @@ fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                             initialState = intermediaryList.toList()
                             explanationText.value = "Loaded!"
                             showLoadDialog.value = false
-                            rightPartition.value = mutItems.size-1
+                            rightPartition.intValue = mutItems.size-1
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.PlayArrow,
@@ -214,7 +223,7 @@ fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
                 )
             }
             LargeFloatingActionButton(onClick =
-            { if (!lock.value){rightPartition.value = mutItems.size -1
+            { if (!lock.value){rightPartition.intValue = mutItems.size -1
                 lock.value = true
                 quickSort(mutItems, explanationText, actualColors, colourMode, leftPartition, rightPartition, paused)
                 }
@@ -230,16 +239,16 @@ fun QuickSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, c
             Divider(modifier = Modifier.padding(all = 8.dp))
             Row (modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
                 IconButton(onClick = {resetHandler(defaultColors, actualColors, mutItems, initialState, null, explanationText, null, lock)
-                    leftPartition.value = 0
-                    rightPartition.value = mutItems.size-1
+                    leftPartition.intValue = 0
+                    rightPartition.intValue = mutItems.size-1
                 }) {
-                    androidx.compose.material3.Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
+                    Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
                 }
                 IconButton(onClick = { if (!lock.value) addHandler(mutItems, settings.maxSize.intValue)}, modifier = Modifier.background(color = if (mutItems.size > settings.maxSize.intValue) colourMode.lockedColour else colourMode.defaultColour)) {
-                    androidx.compose.material3.Icon(imageVector = Icons.Filled.Add, contentDescription = "Add element")
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Add element")
                 }
                 IconButton(onClick = { if (!lock.value) removeHandler(mutItems) }, modifier = Modifier.background(color = if (mutItems.size <= 1) colourMode.lockedColour else colourMode.defaultColour)) {
-                    androidx.compose.material3.Icon(imageVector = Icons.Filled.Clear, contentDescription = "Remove element")
+                    Icon(imageVector = Icons.Filled.Clear, contentDescription = "Remove element")
                 }
                 Button(onClick = { textToggle.value = !textToggle.value }) {
                     Text(text = (if (textToggle.value) "Text Off" else "Text On"), fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)

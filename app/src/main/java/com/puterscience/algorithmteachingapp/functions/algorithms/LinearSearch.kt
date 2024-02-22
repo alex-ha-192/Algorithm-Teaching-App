@@ -11,11 +11,11 @@ fun linearSearch(array: MutableList<Int>, explanationText: MutableState<String>,
             for (i in 0 until colorsToApply.size) {
                 colorsToApply[i] = colourMode.lockedColour
             }
-            colors.removeAll(colors)
+            colors.removeAll(colors.toSet())
             colors.addAll(colorsToApply)
         }
         // Don't increment iState automatically to allow element 0 to be searched
-        if (array[iState.value] == toLookFor.value) { // Check if item is at location
+        if (array[iState.value] == toLookFor.value) { // Check if item is at current location
             colors[iState.value] = colourMode.selectedColour1
             explanationText.value = "As ${array[iState.value]} = ${toLookFor.value}, we have found the item."
             finished.value = true // Don't try to keep advancing even if search is complete

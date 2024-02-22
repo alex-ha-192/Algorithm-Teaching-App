@@ -8,6 +8,4 @@ class ColourMode (
     var selectedColour1: Color,
     var selectedColour2: Color,
     var deselectedColour: Color
-    ) {
-
-}
+    )

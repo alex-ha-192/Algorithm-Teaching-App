@@ -8,10 +8,10 @@ import androidx.room.Update
 
 @Dao
 interface DatasetDao {
-    @Query("SELECT * FROM Dataset")
+    @Query("SELECT * FROM Dataset") // get all elements from dataset
     fun getAll(): Array<Dataset>
 
-    @Query("SELECT * FROM Dataset ORDER BY Name ASC")
+    @Query("SELECT * FROM Dataset ORDER BY Name ASC") // order all elements by name
     fun getNameAscending(): Array<Dataset>
 
     @Query("SELECT * FROM Dataset ORDER BY Name DESC")
@@ -26,8 +26,8 @@ interface DatasetDao {
     @Query("SELECT Name FROM Dataset")
     fun getNames(): Array<String>
 
-    @Insert
-    fun addDataset(dataset: Dataset)
+    @Insert // insert tag automatically generates a sql query
+    fun addDataset(dataset: Dataset) // take datasets objects as a parameter
 
     @Delete
     fun removeDataset(dataset: Dataset)

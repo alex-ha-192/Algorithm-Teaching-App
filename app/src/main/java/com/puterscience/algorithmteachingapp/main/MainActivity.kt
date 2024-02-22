@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ApplicationTeachingAppTheme {
+                // init databases
                 val persistentDb = Room.databaseBuilder(
                     applicationContext,
                     DatasetDatabase::class.java, "datasets"
@@ -33,13 +34,16 @@ class MainActivity : ComponentActivity() {
                     SettingsDatabase::class.java, "settings"
                 ).allowMainThreadQueries().build()
 
+                // create navController and flags
                 val universalNavController = rememberNavController()
                 var firstTimeFlag = remember { mutableStateOf(true) }
+
+                // define colour modes
                 val colourModeStd: ColourMode = ColourMode(Color.LightGray, Color.Gray, Color(34, 139, 34), Color.Red, Color.Black)
                 val colourModeProDeu: ColourMode = ColourMode(Color.LightGray, Color.Gray, Color.Blue, Color(228, 208, 10), Color.Black)
                 val colourModeTri: ColourMode = ColourMode(Color.LightGray, Color.Gray, Color.Blue, Color(/*PINK*/255, 192, 203), Color.Black)
                 val colourModeMono: ColourMode = ColourMode(Color.LightGray, Color.Gray, Color.LightGray, Color.DarkGray, Color.Black)
-                val allColourModes = listOf<ColourMode>(colourModeStd, colourModeProDeu, colourModeTri, colourModeMono)
+                val allColourModes = listOf(colourModeStd, colourModeProDeu, colourModeTri, colourModeMono)
 
                 // Handle loading settings
                 val allSavedSettings = savedSettings.settingsDao().getSettings()
@@ -71,7 +75,11 @@ class MainActivity : ComponentActivity() {
                     defaultLargeText = 26,
                     defaultSmallText = 16
                 )
-                val colourModes = listOf<ColourMode>(colourModeStd, colourModeProDeu, colourModeTri, colourModeMono)
+
+                // define list of colour modes
+                val colourModes = listOf(colourModeStd, colourModeProDeu, colourModeTri, colourModeMono)
+
+                // pass to navigation drawer function
                 NavigationDrawer(
                     navController = universalNavController,
                     navHostController = universalNavController,

@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(DelicateCoroutinesApi::class)
 fun quickSort(array: MutableList<Int>, explanationText: MutableState<String>, colors: MutableList<Color>, colourMode: ColourMode, low: MutableIntState, high: MutableIntState, paused: MutableState<Boolean>) {
-    // TODO: Colours
+    // Colours just make the app crash
     GlobalScope.launch{
         val colorsNew: MutableList<Color> = mutableListOf()
             for (i in 0 until colors.size){
@@ -21,9 +21,9 @@ fun quickSort(array: MutableList<Int>, explanationText: MutableState<String>, co
         if (Thread.currentThread().isInterrupted){
             return@launch
         }
-        if (low.value < high.value) {
+        if (low.intValue < high.intValue) {
             val partitionIndex =
-                partition(array, explanationText, colors, colourMode, low.value, high.value, paused)
+                partition(array, explanationText, colors, low.intValue, high.intValue, paused)
             while (paused.value) {
 
             }
@@ -65,13 +65,19 @@ fun quickSort(array: MutableList<Int>, explanationText: MutableState<String>, co
     }
 }
 
-fun partition(array: MutableList<Int>, explanationText: MutableState<String>, colors: MutableList<Color>, colourMode: ColourMode, low: Int, high: Int, paused: MutableState<Boolean>): Int{
+fun partition(array: MutableList<Int>, explanationText: MutableState<String>, colors: MutableList<Color>,
+              low: Int, high: Int, paused: MutableState<Boolean>): Int{
+    // return if thread is paused
     if (Thread.currentThread().isInterrupted){
         return 0
     }
+
+    // partition not needed
     if (high >= array.size) {
         return 0
     }
+
+    // get pivot
     val pivot = array[high]
     val newColors = mutableListOf<Color>()
     for (i in 0 until colors.size-1){
@@ -80,7 +86,7 @@ fun partition(array: MutableList<Int>, explanationText: MutableState<String>, co
     //newColors[high] = colourMode.selectedColour1
     //colors.removeAll(colors)
     //colors.addAll(newColors)
-    explanationText.value = "We will select ${pivot} as the pivot."
+    explanationText.value = "We will select $pivot as the pivot value."
     paused.value = true
     while (paused.value) {
 
@@ -89,7 +95,7 @@ fun partition(array: MutableList<Int>, explanationText: MutableState<String>, co
         return 0
     }
     var i = low - 1
-    explanationText.value = "We will now scan along the array until an item larger than the pivot is found."
+    explanationText.value = "From the start of the array, we keep going until we find something larger than the pivot."
     paused.value = true
     while (paused.value){
 
@@ -97,7 +103,7 @@ fun partition(array: MutableList<Int>, explanationText: MutableState<String>, co
     if (Thread.currentThread().isInterrupted){
         return 0
     }
-    for (j in low until high){
+    for (j in low until high){ // standard QS
         if (j >= array.size){ // This should never call unless something bad happened but it's good to have it just in case
             return 0
         }
@@ -105,7 +111,7 @@ fun partition(array: MutableList<Int>, explanationText: MutableState<String>, co
             i++
             if (i != j) {
                 explanationText.value =
-                    "As ${array[j]} is smaller than the pivot, we swap ${array[j]}, ${array[i]}."
+                    "${array[j]} is smaller than the pivot, so we swap ${array[j]} and ${array[i]}."
                 swapElements(array, i, j)
                 paused.value = true
                 while (paused.value){
@@ -122,7 +128,13 @@ fun partition(array: MutableList<Int>, explanationText: MutableState<String>, co
     if (i + 1 >= array.size || high >= array.size){
         return 0 // just in case
     }
-    explanationText.value = "${array[i+1]} is larger than the pivot, so we swap ${array[i+1]} and ${array[high]}. When these are the same, the next-final element becomes the pivot."
+    explanationText.value = "${array[i+1]} is larger than the pivot, so we swap ${array[i+1]} and ${array[high]}. " +
+            "These elements could be the same. If so, we will choose the element next closest to the end as the new pivot. " +
+            "Otherwise, the array may already be sorted." // slightly rough tooltip
+    val sortedArray = array.sorted()
+    if (array == sortedArray) {
+        explanationText.value = "The array is now sorted."
+    }
     swapElements(array, i+1, high)
     paused.value = true
     return (i + 1)

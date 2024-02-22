@@ -24,7 +24,9 @@ import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 
 @Composable
 fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes: List<ColourMode>, firstTimeFlag: MutableState<Boolean>, settingsDao: settingsDao) {
+    // justSaved determines whether or not to show the user the "Saved!" message, start at false
     val justSaved: MutableState<Boolean> = remember { mutableStateOf(false)}
+    // load current colour mode
     val currentColourBlindMode: MutableState<String> = remember {mutableStateOf("")}
     if (globalSettings.colourMode.value == allColourModes[0]){
         currentColourBlindMode.value = "Standard"
@@ -42,7 +44,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
     Box {
         Column {
             Text(text = "Text size:", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
-            Button(onClick = { justSaved.value = false
+            Button(onClick = { justSaved.value = false // text size toggle
                 (globalSettings.largeText.value) = !(globalSettings.largeText.value)}) {
                 Text(
                     text = (if (globalSettings.largeText.value) "Disable large text" else "Enable large text"),
@@ -101,7 +103,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                             if (globalSettings.maxSize.intValue > 1) globalSettings.maxSize.intValue-- }) {
                             Icon(
                                 imageVector = Icons.Filled.KeyboardArrowDown,
-                                contentDescription = "Reduce"
+                                contentDescription = "Reduce maxSize"
                             )
                         }
                         Button(onClick =
@@ -109,7 +111,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                             globalSettings.maxSize.intValue++ }) {
                             Icon(
                                 imageVector = Icons.Filled.KeyboardArrowUp,
-                                contentDescription = "Increase"
+                                contentDescription = "Increase maxSize"
                             )
                         }
                     }
@@ -119,7 +121,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                     Button(onClick = {
                         firstTimeFlag.value = false
                         justSaved.value = true
-                        if (settingsDao.getSettings().size != 0) {
+                        if (settingsDao.getSettings().isNotEmpty()) { // only attempt to update settings if an entry already exists
                             settingsDao.updateSettings(
                                 SettingsDataObject(
                                     1,
@@ -127,7 +129,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                                 )
                             )
                         } else {
-                            settingsDao.addSettings(
+                            settingsDao.addSettings( // add a new settings object if none exist
                                 SettingsDataObject(
                                     1,
                                     constructSettingsString(globalSettings, allColourModes)
@@ -140,7 +142,7 @@ fun SettingsScreen(globalSettings: Settings, defaults: Defaults, allColourModes:
                             fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                         )
                     }
-                    Text(
+                    Text( // this should notify the user if they've just saved
                         text = if (firstTimeFlag.value) "No settings saved!" else if (!justSaved.value)"" else "Saved successfully!",
                         fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp
                     )

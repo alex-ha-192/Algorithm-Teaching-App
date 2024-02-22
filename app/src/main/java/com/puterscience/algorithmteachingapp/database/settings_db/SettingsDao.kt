@@ -7,7 +7,7 @@ import androidx.room.Update
 
 @Dao
 interface settingsDao {
-    @Query("SELECT settings FROM SettingsDataObject")
+    @Query("SELECT settings FROM SettingsDataObject") // data class is defined in database/settings_db/Settings.kt
     fun getSettings(): Array<String>
 
     @Update

@@ -1,14 +1,19 @@
 package com.puterscience.algorithmteachingapp.algo_screens
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -16,12 +21,16 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,13 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.puterscience.algorithmteachingapp.database.dataset_db.DatasetDatabase
+import com.puterscience.algorithmteachingapp.functions.algorithms.mergeSort
+import com.puterscience.algorithmteachingapp.functions.resetHandler
 import com.puterscience.algorithmteachingapp.settings.settings_classes.ColourMode
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Defaults
 import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
-import com.puterscience.algorithmteachingapp.functions.algorithms.mergeSort
-import com.puterscience.algorithmteachingapp.functions.resetHandler
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun MergeSortScreen(//toSort: List<Int>,
                     settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
@@ -45,13 +53,9 @@ fun MergeSortScreen(//toSort: List<Int>,
     var initialState: List<Int> = toSort
     val lock = remember { mutableStateOf(false) }
     val textToggle = remember { mutableStateOf(true)}
-    val explanationText = remember {mutableStateOf<String>("")}
-    val showLoadDialog = remember { mutableStateOf<Boolean>(false) }
-    val toUseName = remember {mutableStateOf<String>("")}
-    val leftPartition = remember{ mutableIntStateOf(0)}
+    val explanationText = remember {mutableStateOf("")}
+    val showLoadDialog = remember { mutableStateOf(false) }
     val rightPartition = remember{ mutableIntStateOf(mutItems.size-1)}
-    val paused = remember{ mutableStateOf(true)}
-    val scope = rememberCoroutineScope()
     // Colors
     val defaultColors = mutableListOf<Color>()
     val actualColors = remember {
@@ -92,7 +96,7 @@ fun MergeSortScreen(//toSort: List<Int>,
                             initialState = intermediaryList.toList()
                             explanationText.value = "Loaded!"
                             showLoadDialog.value = false
-                            rightPartition.value = mutItems.size-1
+                            rightPartition.intValue = mutItems.size-1
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.PlayArrow,
@@ -220,11 +224,11 @@ fun MergeSortScreen(//toSort: List<Int>,
             }*/
             LargeFloatingActionButton(onClick =
             { if (!lock.value){lock.value = true
-                mergeSort(mutItems, explanationText, actualColors, colourMode, paused, currentStage)
+                mergeSort(mutItems, explanationText, actualColors, colourMode, currentStage)
             }
                                                 else {
                                                     currentStage.intValue++
-                mergeSort(mutItems, explanationText, actualColors, colourMode, paused, currentStage)
+                mergeSort(mutItems, explanationText, actualColors, colourMode, currentStage)
                                                 }
             }
                 , modifier = Modifier
@@ -237,7 +241,7 @@ fun MergeSortScreen(//toSort: List<Int>,
                 IconButton(onClick = {resetHandler(defaultColors, actualColors, mutItems, initialState, null, explanationText, null, lock)
                     currentStage.intValue = 0
                 }) {
-                    androidx.compose.material3.Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
+                    Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
                 }
                 /*IconButton(onClick = { if (!lock.value) addHandler(mutItems, settings.maxSize.intValue)}, modifier = Modifier.background(color = if (mutItems.size > settings.maxSize.intValue) colourMode.lockedColour else colourMode.defaultColour)) {
                     androidx.compose.material3.Icon(imageVector = Icons.Filled.Add, contentDescription = "Add element")

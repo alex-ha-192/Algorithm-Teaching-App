@@ -50,41 +50,45 @@ import com.puterscience.algorithmteachingapp.functions.removeHandler
 import com.puterscience.algorithmteachingapp.functions.resetHandler
 import com.puterscience.algorithmteachingapp.functions.saveToDb
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class) // need to do this for material3
 @Composable
 fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
+    // init variables
     val mutItems = remember { mutableStateListOf<Int>().apply { addAll(toSort) } }
-    var initialState: List<Int> = toSort
-    val increment = remember { mutableStateOf(true) }
+    var initialState: List<Int> = toSort // what to reset back to
     val lock = remember { mutableStateOf(false) }
     val textToggle = remember { mutableStateOf(true)}
-    val explanationText = remember {mutableStateOf<String>("")}
-    val showLoadDialog = remember { mutableStateOf<Boolean>(false) }
-    val toUseName = remember {mutableStateOf<String>("")}
+    val explanationText = remember {mutableStateOf("")}
+    val showLoadDialog = remember { mutableStateOf(false) }
+    val toUseName = remember {mutableStateOf("")}
 
     // Button variables
     val toSearch = remember { mutableIntStateOf(0) }
     val iState = remember { mutableIntStateOf(0) }
-    val searchFinished = remember {mutableStateOf<Boolean>(false)}
+    val searchFinished = remember {mutableStateOf(false)}
     val mutColors = remember { mutableStateListOf<Color>()}
 
+    // init colours
     val colorsToApply: MutableList<Color> = mutableListOf()
     for (i in 0 until mutItems.size) {
         mutColors.add(colourMode.defaultColour)
         colorsToApply.add(colourMode.defaultColour)
     }
+    // get db
     val daoElements = db.datasetDao().getAll()
-    if (showLoadDialog.value) {
-        Dialog(onDismissRequest = { showLoadDialog.value = false }) {
+    if (showLoadDialog.value) { // only show load dialog if showLoadDialog
+        Dialog(onDismissRequest = { showLoadDialog.value = false }) { // dismissRequest is just clicking away or hw/sw back button
             Column(
                 Modifier
-                    .background(Color.White)
-                    .verticalScroll(rememberScrollState())) {
-                daoElements.forEachIndexed { _, i ->
+                    .background(Color.White) // add white bg
+                    .verticalScroll(rememberScrollState())) { // scrollable
+                daoElements.forEachIndexed { _, i -> // lambdas are just faster for this use case
                     Row {
+                        // parse into comprehensible output
                         Text(text = i.name + ": ")
                         Text(text = i.listInts.split("_").toList().toString())
                         IconButton(onClick = {
+                            // parse db entry into new array and load it
                             mutItems.removeAll(mutItems)
                             val intermediary: List<String> = i.listInts.split("_")
                             val intermediaryList: MutableList<Int> = mutableListOf()
@@ -122,11 +126,11 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                     .width(0.dp), color = Color.White)
                 Column (modifier = Modifier
                     .weight(1f)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()) // scrollable dataset!
                 ) {
-                    Row (verticalAlignment = Alignment.CenterVertically){
+                    Row (verticalAlignment = Alignment.CenterVertically){ // tosearch goes on top of main dataset
                         IconButton(
-                            onClick = { if (!lock.value) toSearch.value-- },
+                            onClick = { if (!lock.value) toSearch.intValue-- },
                             modifier = Modifier
                                 .width(24.dp)
                                 .alpha(if (!lock.value) 1f else 0f)
@@ -143,7 +147,7 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                         )
                         {
                             Text(
-                                text = toSearch.value.toString(),
+                                text = toSearch.intValue.toString(),
                                 color = Color.White,
                                 modifier = Modifier
                                     .height(IntrinsicSize.Min)
@@ -152,7 +156,7 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                             )
                         }
                         IconButton(
-                            onClick = { if (!lock.value) toSearch.value++ },
+                            onClick = { if (!lock.value) toSearch.intValue++ },
                             modifier = Modifier
                                 .width(24.dp)
                                 .alpha(if (!lock.value) 1f else 0f)
@@ -164,9 +168,9 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                         }
                     }
                     Divider()
-                    mutItems.forEachIndexed { index, i ->
+                    mutItems.forEachIndexed { index, i -> // this is so much faster than a for loop
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = {if (!lock.value) mutItems[index]--}, modifier = Modifier
+                            IconButton(onClick = {if (!lock.value) mutItems[index]--}, modifier = Modifier // decrement element
                                 .width(24.dp)
                                 .alpha(if (!lock.value) 1f else 0f)) {
                                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Reduce")
@@ -177,14 +181,14 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                                     .background(mutColors[index])
                             )
                             {
-                                Text(
+                                Text( // text of element
                                     text = i.toString(),
                                     modifier = Modifier.align(Center),
                                     fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
                                     color = Color.White
                                 )
                             }
-                            IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier
+                            IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier // increment element
                                 .width(24.dp)
                                 .alpha(if (!lock.value) 1f else 0f)) {
                                 Icon(imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "Increase")
@@ -201,7 +205,7 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                     .verticalScroll(rememberScrollState())) {
                     Text(text = explanationText.value, fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp))
                     Divider(modifier = Modifier.padding(16.dp))
-                    Text(text = (
+                    Text(text = ( // just hard code the pseudocode, there's no point in making anything but opacity dynamic
                             "1. for i in len(array):" +
                                     "\n2.    if toFind = array[i] return i" +
                                     "\n3. return -1"
@@ -216,14 +220,14 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
                 explanationText.value = "Saved!" else explanationText.value = "Use a unique name."}) {
                     Text(text = "Save")
                 }
-                OutlinedTextField(
+                OutlinedTextField( // enter dataset name, need to use Back button to unfocus
                     value = toUseName.value,
                     onValueChange = { toUseName.value = it },
                     label = { Text(text = "Dataset name")}
                 )
             }
             LargeFloatingActionButton(onClick = { if(!lock.value) {
-                lock.value = true
+                lock.value = true // just lock
             }
                 linearSearch(mutItems, explanationText, toSearch, iState, searchFinished, mutColors, colorsToApply, colourMode)
                 }, modifier = Modifier
@@ -233,7 +237,7 @@ fun LinearSearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
             }
             Divider(modifier = Modifier.padding(all = 8.dp))
             Row (modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
-                IconButton(onClick = {
+                IconButton(onClick = { // reset
                     resetHandler(colorsToApply, mutColors, mutItems, initialState, finishedSearch = searchFinished, explanationText, iState, lock)
                 }) {
                     Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")

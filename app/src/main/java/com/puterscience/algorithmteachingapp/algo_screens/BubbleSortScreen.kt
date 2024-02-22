@@ -47,14 +47,14 @@ import com.puterscience.algorithmteachingapp.functions.saveToDb
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
+    // initialise variables
     val mutItems = remember { mutableStateListOf<Int>().apply { addAll(toSort) } }
     var initialState: List<Int> = toSort
-    val increment = remember { mutableStateOf(true) }
     val lock = remember { mutableStateOf(false) }
     val textToggle = remember { mutableStateOf(true)}
-    val explanationText = remember {mutableStateOf<String>("")}
-    val showLoadDialog = remember { mutableStateOf<Boolean>(false) }
-    val toUseName = remember {mutableStateOf<String>("")}
+    val explanationText = remember {mutableStateOf("")}
+    val showLoadDialog = remember { mutableStateOf(false) }
+    val toUseName = remember {mutableStateOf("")}
 
 
     // Colors
@@ -69,24 +69,27 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
         actualColors.add(colourMode.defaultColour)
         lockedColors.add(colourMode.lockedColour)
     }
-    val daoElements = db.datasetDao().getAll()
+    val daoElements = db.datasetDao().getAll() // get elements from db
     if (showLoadDialog.value) {
-        Dialog(onDismissRequest = { showLoadDialog.value = false }) {
+        Dialog(onDismissRequest = { showLoadDialog.value = false }) { // use a dialog for load
             Column(
                 Modifier
                     .background(Color.White)
-                    .verticalScroll(rememberScrollState())) {
+                    .verticalScroll(rememberScrollState())) { // scrollable!
                 daoElements.forEachIndexed { _, i ->
                     Row {
+                        // parse string to display
                         Text(text = i.name + ": ")
                         Text(text = i.listInts.split("_").toList().toString())
                         IconButton(onClick = {
                             mutItems.removeAll(mutItems)
+                            // parse string to new array
                             val intermediary: List<String> = i.listInts.split("_")
                             val intermediaryList: MutableList<Int> = mutableListOf()
                             for (item in intermediary) {
                                 intermediaryList.add(item.toInt())
                             }
+                            // set current array to new array and close dialog
                             mutItems.removeAll(mutItems)
                             mutItems.addAll(intermediaryList)
                             initialState = intermediaryList.toList()
@@ -104,6 +107,7 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
         }
     }
     Box(
+        // main box for all ui elements
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0))
@@ -119,7 +123,7 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                     ) {
-                    mutItems.forEachIndexed { index, i ->
+                    mutItems.forEachIndexed { index, i -> // improves efficiency over using a for loop
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(onClick = {if (!lock.value) mutItems[index]--}, modifier = Modifier
                                 .width(24.dp)
@@ -128,13 +132,13 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
                                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Reduce")
                             }
                             Box(modifier = Modifier.weight(4f).background(actualColors[index])) {
-                                AnimatedContent(
+                                AnimatedContent( // sort algo, elements will change to add animation
                                     //contentAlignment = Alignment.Center,
                                     targetState = i,
                                     transitionSpec = {
-                                        if (i < (if (index < mutItems.size - 1) mutItems[index + 1] else i + 1)) {
+                                        if (i < (if (index < mutItems.size - 1) mutItems[index + 1] else i + 1)) { // can change animation depending on how the item changes
                                             slideInVertically { fullHeight -> fullHeight } + fadeIn() with
-                                                    slideOutVertically { fullHeight -> -fullHeight } + fadeOut()
+                                                    slideOutVertically { fullHeight -> -fullHeight } + fadeOut() // pretty standard slides and fades
                                         } else {
                                             slideInVertically { fullHeight -> -fullHeight } + fadeIn() with
                                                     slideOutVertically { fullHeight -> fullHeight } + fadeOut()
@@ -144,10 +148,10 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
                                 ) { number ->
                                     Box(
                                         modifier = Modifier
-                                            //.background(actualColors[index])
+                                            //.background(actualColors[index]) no need for this, handled by algorithm function
                                             .fillMaxWidth()
                                     ) {
-                                        Text(
+                                        Text( // actually display number
                                             text = number.toString(),
                                             modifier = Modifier.align(Alignment.Center),
                                             fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp),
@@ -156,7 +160,7 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
                                     }
                                 }
                             }
-                            IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier
+                            IconButton(onClick = {if (!lock.value) mutItems[index]++}, modifier = Modifier // increment
                                 .width(24.dp)
                                 .weight(1f)
                                 .alpha(if (!lock.value) 1f else 0f)) {
@@ -170,11 +174,11 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
                     .width(12.dp))
                 Column (modifier = Modifier
                     .weight(2f)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()) // make scrollable
                     ) {
                     Text(text = explanationText.value, fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp))
                     Divider(modifier = Modifier.padding(16.dp))
-                    Text(
+                    Text( // hard-coded pseudocode
                             text = ("1. for i = 0 to A.length - 1:\r\n" +
                                     "2.    noSwap = true\r\n" +
                                     "3.    for j = 0 to A.length - (i+1):\r\n" +
@@ -191,35 +195,36 @@ fun BubbleSortScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, 
             }
             Row {
                 Button(onClick = { if (!lock.value) showLoadDialog.value = true }) {
-                    Text(text = "Load")
+                    Text(text = "Load") // load button
                 }
                 Button(onClick = { if (saveToDb(db.datasetDao(), mutItems.toList(), toUseName.value))
                 explanationText.value = "Saved!" else explanationText.value = "Use a unique name."}) {
-                    Text(text = "Save")
+                    Text(text = "Save") // save button
                 }
-                OutlinedTextField(
+                OutlinedTextField( // dataset name
                     value = toUseName.value,
                     onValueChange = { toUseName.value = it },
                     label = { Text(text = "Dataset name")}
                 )
             }
-            LargeFloatingActionButton(onClick = { bubbleSort(mutItems, explanationText, actualColors, lockedColors, colourMode)
+            LargeFloatingActionButton(onClick = { bubbleSort(mutItems, explanationText, actualColors, lockedColors, colourMode) // run algorithm and apply lock
                                                 lock.value = true}, modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.1f)) {
                 Text(text = "Bubble sort (will lock values)", fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
             }
+            // buttons self-explanatory by contentDescriptions
             Divider(modifier = Modifier.padding(all = 8.dp))
             Row (modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
                 IconButton(onClick = {resetHandler(defaultColors, actualColors, mutItems, initialState, null, explanationText, null, lock)
                 }) {
-                    androidx.compose.material3.Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
+                    Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
                 }
                 IconButton(onClick = { if (!lock.value) addHandler(mutItems, settings.maxSize.intValue)}, modifier = Modifier.background(color = if (mutItems.size > settings.maxSize.intValue) colourMode.lockedColour else colourMode.defaultColour)) {
-                    androidx.compose.material3.Icon(imageVector = Icons.Filled.Add, contentDescription = "Add element")
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Add element")
                 }
                 IconButton(onClick = { if (!lock.value) removeHandler(mutItems) }, modifier = Modifier.background(color = if (mutItems.size <= 1) colourMode.lockedColour else colourMode.defaultColour)) {
-                    androidx.compose.material3.Icon(imageVector = Icons.Filled.Clear, contentDescription = "Remove element")
+                    Icon(imageVector = Icons.Filled.Clear, contentDescription = "Remove element")
                 }
                 Button(onClick = { textToggle.value = !textToggle.value }) {
                     Text(text = (if (textToggle.value) "Text Off" else "Text On"), fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)

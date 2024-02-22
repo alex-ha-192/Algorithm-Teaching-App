@@ -4,7 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 
 fun resetHandler(bColors: MutableList<Color>?, mColors: MutableList<Color>?, mutItems: MutableList<Int>, initialState: List<Int>, finishedSearch: MutableState<Boolean>?, upperText: MutableState<String>, iState: MutableState<Int>?, lock: MutableState<Boolean>){
-    mutItems.removeAll(mutItems)
+    // remove all from current array then reconstruct from initState
+    mutItems.removeAll(mutItems.toSet())
     mutItems.addAll(initialState)
     if (mColors != null && bColors != null){
         if (lock.value) {
@@ -24,7 +25,7 @@ fun resetHandler(bColors: MutableList<Color>?, mColors: MutableList<Color>?, mut
 }
 
 fun addHandler(mutItems: MutableList<Int>, maximumArraySize: Int) {
-    if (mutItems.size <= maximumArraySize) {
+    if (mutItems.size <= maximumArraySize) { // off-by-one error
         mutItems.add(0)
     }
 }
@@ -39,4 +40,4 @@ fun swapElements(mutableList: MutableList<Int>, index1: Int, index2:Int) {
     val temp: Int = mutableList[index1]
     mutableList[index1] = mutableList[index2]
     mutableList[index2] = temp
-}
+} // nice shorthand for bubblesort, quicksort

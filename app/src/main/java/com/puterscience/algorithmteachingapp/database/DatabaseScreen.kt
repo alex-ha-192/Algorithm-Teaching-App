@@ -23,14 +23,17 @@ import com.puterscience.algorithmteachingapp.settings.settings_classes.Settings
 
 @Composable
 fun DatabaseScreen(globalSettings: Settings, defaults: Defaults, database: DatasetDatabase) {
+    // get dataset dao and get the elements from it
     val dao = database.datasetDao()
     val daoSorted = dao.getAll()
+    // get a list to display
     val allElements: MutableList<Dataset> = remember { mutableStateListOf<Dataset>().apply { addAll(daoSorted) }}
-    var currentOid = if (daoSorted.isNotEmpty()) daoSorted[daoSorted.size-1].oid else 0
+    // unused var, was going to be important when datasets could be added
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE") var currentOid = if (daoSorted.isNotEmpty()) daoSorted[daoSorted.size-1].oid else 0
     Box {
         // Create UI
         Column(Modifier.verticalScroll(rememberScrollState())) {
-            allElements.forEachIndexed { index, i ->
+            allElements.forEachIndexed { _, i ->
                 Row {
                     //Text(text = i.oid.toString())
                     Text(text = i.name + ": " + i.listInts.split("_").toList().toString(),
@@ -42,7 +45,7 @@ fun DatabaseScreen(globalSettings: Settings, defaults: Defaults, database: Datas
                 }
             }
             Row {
-                /*
+                /* This was just for testing
                 Button(onClick = { currentOid++
                     allElements.add(Dataset(currentOid, "Example", "1_2_3_4_5", 0))
                     dao.addDataset(Dataset(currentOid, "Example", "1_2_3_4_5", 0)) }) {
@@ -50,14 +53,16 @@ fun DatabaseScreen(globalSettings: Settings, defaults: Defaults, database: Datas
                 }
                  */
                 Button(onClick = { for (element in dao.getAll()) {
+                    // remove from db
                     dao.removeDataset(element)
+                    // remove from displayed list
                     allElements.removeAll(allElements)
                     currentOid = 0
                 }
                 }) {
                     Text(text = "Clear all", fontSize = if (globalSettings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
                 }
-                /*
+                /* this was removed, no need to be picky with list
                 Button(
                     onClick = {
                         if (sortOrder != SortOrder.DESC) {

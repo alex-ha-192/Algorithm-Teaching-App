@@ -52,11 +52,12 @@ import com.puterscience.algorithmteachingapp.functions.saveToDb
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults, colourMode: ColourMode, db: DatasetDatabase) {
+	// Initialise variables
 	val mutItems = remember { mutableListOf<Int>().apply { addAll(toSort) } }
 	var initialState: List<Int> = toSort
 	val lock = remember { mutableStateOf(false) }
 	val textToggle = remember { mutableStateOf(true) }
-	val explanationText = remember { mutableStateOf<String>("") }
+	val explanationText = remember { mutableStateOf("") }
 	val currentLeftIndex = remember { mutableIntStateOf(0) }
 	val currentRightIndex = remember { mutableIntStateOf(mutItems.size) }
 	val loadedList = remember {
@@ -66,47 +67,54 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 	// Button variables
 	val toSearch = remember { mutableIntStateOf(0) }
 	val iState = remember { mutableIntStateOf(0) }
-	val searchFinished = remember { mutableStateOf<Boolean>(false) }
+	val searchFinished = remember { mutableStateOf(false) }
 	val mutColors = remember { mutableStateListOf<Color>() }
 	val blankColors = mutableListOf<Color>()
 	val lockedColors = mutableListOf<Color>()
-	val showLoadDialog = remember { mutableStateOf<Boolean>(false) }
-	val toUseName = remember {mutableStateOf<String>("")}
+	val showLoadDialog = remember { mutableStateOf(false) }
+	val toUseName = remember {mutableStateOf("")}
 
+	// Use colour mode argument to set up the colour arrays
 	for (i in 0 until mutItems.size) {
 		mutColors.add(colourMode.defaultColour)
 		blankColors.add(colourMode.defaultColour)
 		lockedColors.add(colourMode.lockedColour)
 	}
 
+	// Get the saved elements from the database
 	val daoElements = db.datasetDao().getAll()
 	if (showLoadDialog.value) {
 			Dialog(onDismissRequest = { showLoadDialog.value = false }) {
 				Column(
 					Modifier
 						.background(Color.White)
-						.verticalScroll(rememberScrollState())) {
-					daoElements.forEachIndexed { _, i ->
+						.verticalScroll(rememberScrollState())) { // Make it scrollable
+					daoElements.forEachIndexed { _, i -> // Use a lambda for speed
 						Row {
 							Text(text = i.name + ": ")
-							Text(text = i.listInts.split("_").toList().toString())
+							Text(text = i.listInts.split("_").toList().toString()) // Split up by _ due to how database items are stored
 							IconButton(onClick = {
-								mutItems.removeAll(mutItems)
+								mutItems.removeAll(mutItems.toSet()) // reset current array
+								// create array of loaded items by parsing the string
 								val intermediary: List<String> = i.listInts.split("_")
 								val intermediaryList: MutableList<Int> = mutableListOf()
 								for (item in intermediary) {
 									intermediaryList.add(item.toInt())
 								}
-								mutItems.removeAll(mutItems)
+								// ENSURE current array is empty
+								mutItems.removeAll(mutItems.toSet())
+								// set current array to parsed list
 								mutItems.addAll(intermediaryList)
+								// set initial state to the loaded list
 								initialState = intermediaryList.toList()
 								explanationText.value = "Loaded!"
-								loadedList.removeAll(loadedList)
+								// create loadedlist for backup reset
+								loadedList.removeAll(loadedList.toSet())
 								loadedList.addAll(mutItems)
 								showLoadDialog.value = false
 							}) {
 								Icon(
-									imageVector = Icons.Filled.PlayArrow,
+									imageVector = Icons.Filled.PlayArrow, // "play" icon
 									contentDescription = "Use"
 								)
 							}
@@ -135,9 +143,9 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 							.weight(1f)
 							.verticalScroll(rememberScrollState())
 					) {
-						Row(verticalAlignment = Alignment.CenterVertically) {
+						Row(verticalAlignment = Alignment.CenterVertically) { // toSearch button
 							IconButton(
-								onClick = { if (!lock.value) toSearch.value-- },
+								onClick = { if (!lock.value) toSearch.intValue-- },
 								modifier = Modifier
 									.width(24.dp)
 									.alpha(if (!lock.value) 1f else 0f)
@@ -154,7 +162,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 							)
 							{
 								Text(
-									text = toSearch.value.toString(),
+									text = toSearch.intValue.toString(),
 									color = Color.White,
 									modifier = Modifier
 										.height(IntrinsicSize.Min)
@@ -163,7 +171,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 								)
 							}
 							IconButton(
-								onClick = { if (!lock.value) toSearch.value++ },
+								onClick = { if (!lock.value) toSearch.intValue++ },
 								modifier = Modifier
 									.width(24.dp)
 									.alpha(if (!lock.value) 1f else 0f)
@@ -175,9 +183,9 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 							}
 						}
 						Divider()
-						mutItems.forEachIndexed { index, i ->
+						mutItems.forEachIndexed { index, i -> // lambda greatly increases the application's speed to reset and modify the array
 							Row(verticalAlignment = Alignment.CenterVertically) {
-								IconButton(
+								IconButton( // decrement
 									onClick = { if (!lock.value) mutItems[index]-- },
 									modifier = Modifier
 										.width(24.dp)
@@ -188,7 +196,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 										contentDescription = "Reduce"
 									)
 								}
-								Box(
+								Box( // show value of element
 									modifier = Modifier
 										.weight(1f)
 										.background(mutColors[index])
@@ -201,7 +209,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 										color = Color.White
 									)
 								}
-								IconButton(
+								IconButton( // increment
 									onClick = { if (!lock.value) mutItems[index]++ },
 									modifier = Modifier
 										.width(24.dp)
@@ -226,13 +234,13 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 							.alpha(1f)
 							.verticalScroll(rememberScrollState())
 					) {
-						Text(
+						Text( // show current explanationText
 							text = explanationText.value,
 							fontSize = (if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp)
 						)
 						Divider(modifier = Modifier.padding(16.dp))
 						Text(
-							text = (
+							text = ( // hard-coded pseudocode
 									"1. while left <= right:" +
 											"\n2.     middle = left + right div 2" +
 											"\n3.     if array[middle] = x, return middle" +
@@ -246,32 +254,31 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 					}
 				}
 				Row {
-					Button(onClick = { if (!lock.value) showLoadDialog.value = true }) {
+					Button(onClick = { if (!lock.value) showLoadDialog.value = true }) { // Load button
 						Text(text = "Load")
 					}
-					Button(onClick = { if (saveToDb(db.datasetDao(), mutItems.toList(), toUseName.value))
+					Button(onClick = { if (saveToDb(db.datasetDao(), mutItems.toList(), toUseName.value)) // Save button
 					explanationText.value = "Saved!" else explanationText.value = "Use a unique name."}) {
 						Text(text = "Save")
 					}
-					OutlinedTextField(
+					OutlinedTextField( // Enter name of dataset
 						value = toUseName.value,
 						onValueChange = { toUseName.value = it },
 						label = { Text(text = "Dataset name")}
 					)
 				}
-				LargeFloatingActionButton(
+				LargeFloatingActionButton( // Run algorithm
 					onClick = {
-						if (!lock.value) {
+						if (!lock.value) { // What to do on first run
 							lock.value = true
-							initialState = mutItems.toList()
-							currentLeftIndex.value = 0
-							currentRightIndex.value = mutItems.size
+							initialState = mutItems.toList() // ensure that on reset, go back to current dataset
+							currentLeftIndex.intValue = 0
+							currentRightIndex.intValue = mutItems.size
 						}
 						binarySearch(
 							mutItems,
 							explanationText,
 							toSearch,
-							iState,
 							searchFinished,
 							mutColors,
 							currentLeftIndex,
@@ -290,7 +297,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 				}
 				Divider(modifier = Modifier.padding(all = 8.dp))
 				Row(modifier = Modifier.align(alignment = Alignment.CenterHorizontally)) {
-					IconButton(onClick = {
+					IconButton(onClick = { // reset button
 						resetHandler(
 							blankColors,
 							mutColors,
@@ -301,29 +308,31 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 							iState,
 							lock
 						)
-						currentLeftIndex.value = 0
-						currentRightIndex.value = mutItems.size
+						currentLeftIndex.intValue = 0
+						currentRightIndex.intValue = mutItems.size
 					}) {
 						Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Reset")
 					}
+					// add an item to the list
 					IconButton(
 						onClick = {
 							if (!lock.value) {
 								addHandler(mutItems, settings.maxSize.intValue)
-								currentRightIndex.value++
+								currentRightIndex.intValue++
 							}
 						},
 						modifier = Modifier.background(color = if (mutItems.size > settings.maxSize.intValue) colourMode.lockedColour else colourMode.defaultColour)
 					) {
 						Icon(imageVector = Icons.Filled.Add, contentDescription = "Add element")
 					}
+					// remove an item from the list
 					IconButton(
 						onClick = {
 							if (!lock.value) {
 								removeHandler(mutItems)
-								currentRightIndex.value--
-								if (currentRightIndex.value <= 0) {
-									currentRightIndex.value = 0
+								currentRightIndex.intValue--
+								if (currentRightIndex.intValue <= 0) {
+									currentRightIndex.intValue = 0
 								}
 							}
 						},
@@ -335,7 +344,7 @@ fun BinarySearchScreen(toSort: List<Int>, settings: Settings, defaults: Defaults
 							contentDescription = "Remove element"
 						)
 					}
-					Button(onClick = { textToggle.value = !textToggle.value }) {
+					Button(onClick = { textToggle.value = !textToggle.value }) { // textToggle
 						Text(
 							text = (if (textToggle.value) "Text Off" else "Text On"),
 							fontSize = if (settings.largeText.value) defaults.defaultLargeText.sp else defaults.defaultSmallText.sp

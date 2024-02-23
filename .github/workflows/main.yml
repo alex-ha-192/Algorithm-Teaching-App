@@ -1,3 +1,0 @@
-              - name: Build and Release APK
-                uses: r0user/release-apk@V1.0
-            
